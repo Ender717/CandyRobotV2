@@ -1,5 +1,5 @@
-#ifndef HAL_V5_ROTATION_SENSOR_HPP
-#define HAL_V5_ROTATION_SENSOR_HPP
+#ifndef HAL_PROS_ROTATION_SENSOR_HPP
+#define HAL_PROS_ROTATION_SENSOR_HPP
 
 #include <cmath>
 #include <memory>
@@ -11,11 +11,11 @@
 namespace hal
 {
 /**
- * @brief Adapter for V5RotationSensor to the IRotationSensor interface
+ * @brief Adapter for Pros Rotation Sensors to the IRotationSensor interface
  *
  * @author Nathan Sandvig
  */
-class V5RotationSensor : public devices::IRotationSensor
+class ProsRotationSensor : public devices::IRotationSensor
 {
 private:
     /**
@@ -25,18 +25,18 @@ private:
     static constexpr double TICKS_PER_RADIAN{18000 / M_PI};
 
     /**
-     * @brief The v5 rotation sensor being adapted to the interface
+     * @brief The pros rotation sensor being adapted to the interface
      *
      */
     std::shared_ptr<pros::Rotation> m_sensor{nullptr};
 
 public:
     /**
-     * @brief Construct a new V5RotationSensor adapter
+     * @brief Construct a new PROSRotationSensor adapter
      *
      * @param sensor The sensor to adapt to the IRotationSensor interface
      */
-    V5RotationSensor(const std::shared_ptr<pros::Rotation>& sensor);
+    ProsRotationSensor(const std::shared_ptr<pros::Rotation>& sensor);
 
     /**
      * @brief Set the rotation of the sensor

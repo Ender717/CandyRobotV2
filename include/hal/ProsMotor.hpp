@@ -1,5 +1,5 @@
-#ifndef HAL_V5_MOTOR_HPP
-#define HAL_V5_MOTOR_HPP
+#ifndef HAL_PROS_MOTOR_HPP
+#define HAL_PROS_MOTOR_HPP
 
 #include <memory>
 
@@ -10,11 +10,11 @@
 namespace hal
 {
 /**
- * @brief Adapter for V5Motor to the IMotor interface
+ * @brief Adapter for Pros Motor to the IMotor interface
  *
  * @author Nathan Sandvig
  */
-class V5Motor : public devices::IMotor
+class ProsMotor : public devices::IMotor
 {
 private:
     /**
@@ -24,18 +24,18 @@ private:
     static constexpr uint16_t MV_PER_V{1000};
 
     /**
-     * @brief The v5 motor being adapted to the interface
+     * @brief The Pros motor being adapted to the interface
      *
      */
     std::shared_ptr<pros::Motor> m_motor{nullptr};
 
 public:
     /**
-     * @brief Construct a new V5Motor adapter
+     * @brief Construct a new ProsMotor adapter
      *
      * @param motor The motor to adapt to the IMotor interface
      */
-    V5Motor(const std::shared_ptr<pros::Motor>& motor);
+    ProsMotor(const std::shared_ptr<pros::Motor>& motor);
 
     /**
      * @brief Set the output voltage of the motor
