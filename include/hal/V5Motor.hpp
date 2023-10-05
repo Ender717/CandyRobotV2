@@ -18,6 +18,12 @@ class V5Motor : public devices::IMotor
 {
 private:
     /**
+     * @brief Conversion rate from millivolts to volts
+     *
+     */
+    static constexpr uint16_t MV_PER_V{1000};
+
+    /**
      * @brief The v5 motor being adapted to the interface
      *
      */
