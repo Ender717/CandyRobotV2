@@ -54,5 +54,77 @@ void autonomous() {}
  */
 void opcontrol()
 {
+    static constexpr uint8_t LEFT_DRIVE_1_PORT{};
+    static constexpr uint8_t LEFT_DRIVE_2_PORT{};
+    static constexpr uint8_t LEFT_DRIVE_3_PORT{};
 
+    static constexpr uint8_t RIGHT_DRIVE_1_PORT{};
+    static constexpr uint8_t RIGHT_DRIVE_2_PORT{};
+    static constexpr uint8_t RIGHT_DRIVE_3_PORT{};
+
+    static constexpr uint8_t CATAPULT_1_PORT{};
+    static constexpr uint8_t CATAPULT_2_PORT{};
+    static constexpr uint8_t CATAPULT_ROTATION_PORT{};
+
+    static constexpr int32_t CATAPULT_LOADED_POSITION{};
+    static constexpr int32_t CATAPULT_FIRED_POSITION{};
+
+    static constexpr bool TANK_DRIVE{};
+    static constexpr pros::controller_digital_e_t CATAPULT_BUTTON{};
+
+    pros::Controller master{pros::E_CONTROLLER_MASTER};
+    pros::MotorGroup leftDriveMotors{LEFT_DRIVE_1_PORT, LEFT_DRIVE_2_PORT, LEFT_DRIVE_3_PORT};
+    pros::MotorGroup rightDriveMotors{RIGHT_DRIVE_1_PORT, RIGHT_DRIVE_2_PORT, RIGHT_DRIVE_3_PORT};
+    pros::MotorGroup catapultMotors{CATAPULT_1_PORT, CATAPULT_2_PORT};
+    pros::Rotation catapultRotation{CATAPULT_ROTATION_PORT};
+
+    int32_t leftDrivePower{};
+    int32_t rightDrivePower{};
+    uint8_t catapultState{};
+
+    while (true)
+    {
+        if (TANK_DRIVE)
+        {
+            leftDrivePower = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+            rightDrivePower = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        }
+        else
+        {
+            leftDrivePower = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) +
+                             master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+            rightDrivePower = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) -
+                             master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        }
+        leftDriveMotors.move(leftDrivePower);
+        rightDriveMotors.move(rightDrivePower);
+
+        switch (catapultState)
+        {
+        case 0:
+            if (master.get_digital_new_press(CATAPULT_BUTTON))
+            {
+                catapultState = 1;
+                catapultMotors.move(127);
+            }
+            break;
+        case 1:
+            if (catapultRotation.get_angle() > CATAPULT_LOADED_POSITION)
+                catapultState = 2;
+            break;
+        case 2:
+            if (catapultRotation.get_angle() < CATAPULT_FIRED_POSITION)
+                catapultState = 3;
+            break;
+        case 3:
+            if (catapultRotation.get_angle() > CATAPULT_LOADED_POSITION)
+            {
+                catapultState = 0;
+                catapultMotors.move(0);
+            }
+            break;
+        }
+
+        pros::delay(10);
+    }
 }
